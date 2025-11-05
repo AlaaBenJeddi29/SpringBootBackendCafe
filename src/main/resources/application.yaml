@@ -8,6 +8,6 @@ spring:
 
 springdoc:
   swagger-ui:
-    customCssUrl: /css/coffee-style.css
+
     # If you have JS, add customJsUrl here
     path: /swagger-ui.html
