@@ -7,6 +7,7 @@ pipeline {
     }
 
     stages {
+
         stage('Start') {
             steps {
                 echo "=== Starting the Pipeline ==="
@@ -23,21 +24,15 @@ pipeline {
         stage('Build & Compile') {
             steps {
                 echo "=== Running Maven Build ==="
-                script {
-                    if (isUnix()) {
-                        sh "mvn -Dmaven.test.failure.ignore=true clean package"
-                    } else {
-                        bat "mvn -Dmaven.test.failure.ignore=true clean package"
-                    }
-                }
+                sh "mvn -Dmaven.test.failure.ignore=true clean package"
             }
 
             post {
                 success {
                     echo "=== Build SUCCESS! Recording tests and archiving artifacts ==="
-                    // Record test results (if you have unit tests)
+                    // Record test results (if any)
                     junit 'target/surefire-reports/TEST-*.xml'
-                    // Archive JAR file
+                    // Archive built JAR file
                     archiveArtifacts 'target/*.jar'
                 }
                 failure {
