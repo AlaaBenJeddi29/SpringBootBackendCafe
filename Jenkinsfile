@@ -1,56 +1,20 @@
 pipeline {
     agent any
 
-    tools {
-        jdk 'JAVA_HOME'   // Make sure this matches your Jenkins JDK tool name
-        maven 'M2_HOME'   // Make sure this matches your Jenkins Maven tool name
-    }
+    tools {jdk 'JAVA_HOME', maven 'M2_HOME'}
 
     stages {
-
-        stage('Start') {
+        stage('GIT') {
             steps {
-                echo "=== Starting the Pipeline ==="
+                git branch: 'main',
+                    url: 'https://github.com/AlaaBenJeddi29/SpringBootBackendCafe.git'
             }
         }
 
-        stage('Git Checkout') {
+        stage('Compile Stage') {
             steps {
-                echo "=== Cloning Git Repository ==="
-                git branch: 'main', url: 'https://github.com/AlaaBenJeddi29/SpringBootBackendCafe.git'
+                sh 'mvn clean compile'
             }
-        }
-
-        stage('Build & Compile') {
-            steps {
-                echo "=== Running Maven Build ==="
-                sh "mvn -Dmaven.test.failure.ignore=true clean package"
-            }
-
-            post {
-                success {
-                    echo "=== Build SUCCESS! Recording tests and archiving artifacts ==="
-                    // Record test results (if any)
-                    junit 'target/surefire-reports/TEST-*.xml'
-                    // Archive built JAR file
-                    archiveArtifacts 'target/*.jar'
-                }
-                failure {
-                    echo "=== Build FAILED! Check Maven output ==="
-                }
-            }
-        }
-
-        stage('Finish') {
-            steps {
-                echo "=== Pipeline Finished ==="
-            }
-        }
-    }
-
-    post {
-        always {
-            echo "=== Pipeline Completed ==="
         }
     }
 }
